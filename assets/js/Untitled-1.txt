@@ -1,0 +1,59 @@
+function tampil_pengguna() {
+			$.ajax({
+				url: "pengguna/ambil_pengguna",
+				type: 'ajax',
+				async: false,
+				dataType: 'json',
+				success: function (data) {
+					var html = '';
+					var i;
+					for (i = 0; i < data.length; i++) {
+						html += '<tr>' +
+							'<td class="text-center">' + data[i].id_user + '</td>' +
+							'<td class="text-center"><img src="http://localhost/desakita/assets/fp/' + data[i].foto + '" class="img-circle" widht="50" height="50"/></td>' +
+							'<td class="text-center">' + data[i].nik + '</td>' +
+							'<td class="text-center">' + data[i].nama + '</td>' +
+							'<td class="text-center">' + data[i].role + '</td>' +
+							'<td class="text-center">' +
+							'<a href="javascript:;" class="mb-xs mt-xs mr-xs modal-basic btn btn-info item-show" dataid="' + data[i].id_user + '"><i class="fa fa-eye"></i></a>' + ' ' +
+							'<a  class="mb-xs mt-xs mr-xs modal-basic btn btn-warning item-edit" data-toggle="modal" href="javascript:;" data="' + data[i].id_user + '"><i class="fa fa-edit"></i></a>' + ' ' +
+							'<a href="javascript:;" class="mb-xs mt-xs mr-xs modal-basic btn btn-danger item_hapus" dataid="' + data[i].id_user + '"><i class="fa fa-times"></i></a>' +
+							'</td>' +
+							'</tr>';
+					}
+					$('#tabel-pengguna-row').html(html);
+				},
+				error: function () {
+					new PNotify({
+						title: 'Error!',
+						text: 'Data Gagal Tersimpan.',
+						type: 'error'
+					});
+				}
+			});
+		}
+		//GET UPDATE
+		$('#tabel-pengguna-row').on('click', '.item-edit', function () {
+			var id = $(this).attr('data');
+			$.ajax({
+				type: "GET",
+				url: "pengguna/ambil_pengguna_id",
+				dataType: "JSON",
+				data: {
+					id: id
+				},
+				success: function (data) {
+					$.each(data, function (nik, nama, no_telepon, role, nama_user, password) {
+						$('#ModalPenggunaEdit').modal('show');
+						$('[name="nik-edit"]').val(data.nik);
+						$('[name="namalengkap-edit"]').val(data.nama);
+						$('[name="nohp-edit"]').val(data.no_telepon);
+						$('[name="role-edit"]').val(data.role);
+						$('[name="username-edit"]').val(data.nama_user);
+						$('[name="password-edit"]').val(data.password);
+
+					});
+				}
+			});
+			return false;
+		});
